@@ -1,7 +1,7 @@
 from setuptools import setup
 setup(
     name='python-binary-memcached',
-    version='0.18-dev',
+    version='0.18-dev2',
     author='Jayson Reis',
     author_email='santosdosreis@gmail.com',
     description='A pure python module (thread safe) to access memcached via it\'s binary' +
