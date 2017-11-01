@@ -244,7 +244,6 @@ class Protocol(object):
         :return: Returns a key data from server.
         :rtype: object
         """
-        logger.info('Getting key %s' % key)
         self.connection.send(struct.pack(self.HEADER_STRUCT +
                                          self.COMMANDS['get']['struct'] % (len(key)),
                                          self.MAGIC['request'],
@@ -254,13 +253,9 @@ class Protocol(object):
         (magic, opcode, keylen, extlen, datatype, status, bodylen, opaque,
          cas, extra_content) = self._get_response()
 
-        logger.debug('Value Length: %d. Body length: %d. Data type: %d' % (
-            extlen, bodylen, datatype))
 
         if status != self.STATUS['success']:
             if status == self.STATUS['key_not_found']:
-                logger.debug('Key not found. Message: %s'
-                             % extra_content)
                 return None
 
             raise MemcachedException('Code: %d Message: %s' % (status, extra_content))
@@ -325,9 +320,7 @@ class Protocol(object):
         :return: True in case of success and False in case of failure
         :rtype: bool
         """
-        logger.info('Setting/adding/replacing key %s.' % key)
         flags, value = self.serialize(value)
-        logger.info('Value bytes %d.' % len(value))
 
         self.connection.send(struct.pack(self.HEADER_STRUCT +
                                          self.COMMANDS[command]['struct'] % (len(key), len(value)),
@@ -518,7 +511,6 @@ class Protocol(object):
         :return: True in case o success and False in case of failure.
         :rtype: bool
         """
-        logger.info('Deletting key %s' % key)
         self.connection.send(struct.pack(self.HEADER_STRUCT +
                                          self.COMMANDS['delete']['struct'] % len(key),
                                          self.MAGIC['request'],
@@ -531,7 +523,6 @@ class Protocol(object):
         if status != self.STATUS['success'] and status != self.STATUS['key_not_found']:
             raise MemcachedException('Code: %d message: %s' % (status, extra_content))
 
-        logger.debug('Key deleted %s' % key)
         return True
 
     def flush_all(self, time):
